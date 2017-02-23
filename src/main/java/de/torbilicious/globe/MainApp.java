@@ -14,7 +14,7 @@ public class MainApp extends PApplet {
     private Queue<Drawable> toDraw = new LinkedList<>();
     private LineFactory lineFactory = new LineFactory(width, height);
 
-    public static void main(String[] args) {
+    public static void main(String... args) {
 
         PApplet.main(MainApp.class);
     }
@@ -22,7 +22,7 @@ public class MainApp extends PApplet {
     @Override
     public void settings() {
 
-        size(800, 600, JAVA2D);
+        size(800, 600, P2D);
     }
 
     @Override
@@ -73,6 +73,5 @@ public class MainApp extends PApplet {
 
             System.out.printf("Elements remaining: %d%n", toDraw.size());
         }
-
     }
 }
