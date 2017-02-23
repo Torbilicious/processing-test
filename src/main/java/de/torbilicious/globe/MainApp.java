@@ -1,33 +1,18 @@
 package de.torbilicious.globe;
 
+import de.torbilicious.globe.graphics.Drawable;
+import de.torbilicious.globe.line.Line;
+import de.torbilicious.globe.line.LineFactory;
 import processing.core.PApplet;
 
-import java.util.ArrayList;
-
-class Line {
-
-    final int x1;
-    final int x2;
-
-    final int y1;
-    final int y2;
-
-    Line(Integer x1,
-         Integer y1,
-         Integer x2,
-         Integer y2) {
-
-        this.x1 = x1;
-        this.x2 = x2;
-
-        this.y1 = y1;
-        this.y2 = y2;
-    }
-}
+import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 public class MainApp extends PApplet {
 
     private ArrayList<Line> lines = new ArrayList<>();
+    private Queue<Drawable> toDraw = new LinkedList<>();
+    private LineFactory lineFactory = new LineFactory(width, height);
 
     public static void main(String[] args) {
 
@@ -37,7 +22,7 @@ public class MainApp extends PApplet {
     @Override
     public void settings() {
 
-        size(800, 600, FX2D);
+        size(800, 600, JAVA2D);
     }
 
     @Override
@@ -47,6 +32,18 @@ public class MainApp extends PApplet {
         smooth();
         strokeWeight(15);
 //        frameRate(120);
+
+        Timer timer = new Timer();
+        timer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+
+                Line newLine = lineFactory.createRandomLine();
+
+                lines.add(newLine);
+                toDraw.add(newLine);
+            }
+        }, 0, 1);
     }
 
     @Override
@@ -54,18 +51,28 @@ public class MainApp extends PApplet {
 
         stroke(random(50), random(255), random(255), 100);
 
-        for(Line line : lines) {
+        Long startingTime = System.nanoTime();
+        Long currentTime;
+        Long deltaNano;
+        Long deltaMilli;
 
-            line(line.x1, line.y1, line.x2, line.y2);
+        while (!toDraw.isEmpty()) {
+
+            currentTime = System.nanoTime();
+            deltaNano = currentTime - startingTime;
+            deltaMilli = TimeUnit.MILLISECONDS.convert(deltaNano, TimeUnit.NANOSECONDS);
+            if (deltaMilli > 10) {
+
+                break;
+            }
+
+            stroke(random(50), random(255), random(255), 100);
+
+            Drawable drawable = toDraw.poll();
+            drawable.draw(this);
+
+            System.out.printf("Elements remaining: %d%n", toDraw.size());
         }
 
-
-//        line(x, 0, random(0, width), height);
-//        x = x < width ? x+1 : 0;
     }
-
-//    private Line getRandomLine() {
-//
-//        return new Line();
-//    }
 }
