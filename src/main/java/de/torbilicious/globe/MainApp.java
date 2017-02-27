@@ -12,7 +12,7 @@ public class MainApp extends PApplet {
 
     private ArrayList<Line> lines = new ArrayList<>();
     private Queue<Drawable> toDraw = new LinkedList<>();
-    private LineFactory lineFactory = new LineFactory(width, height);
+    private LineFactory lineFactory;
 
     public static void main(String... args) {
 
@@ -23,6 +23,8 @@ public class MainApp extends PApplet {
     public void settings() {
 
         size(800, 600, P2D);
+
+        lineFactory = new LineFactory(width, height);
     }
 
     @Override
@@ -31,6 +33,7 @@ public class MainApp extends PApplet {
         background(0);
         smooth();
         strokeWeight(15);
+
 //        frameRate(120);
 
         Timer timer = new Timer();
